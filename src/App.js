@@ -5,9 +5,8 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import ShopPage from './components/shop-page/shop-page.component';
 import Header from './components/header/header.component';
 import SignInSignUp from './Pages/sign-in-sign-up-page/sign-in-sign-up.component';
-import { auth } from './components/firebase/firebase.config';
+import { auth, makeUserRegisterDocument } from './components/firebase/firebase.config';
 
-const Hats = () => <div>HATS</div>
 
  class App extends React.Component {
    state = {
@@ -17,8 +16,22 @@ const Hats = () => <div>HATS</div>
    componentDidMount() {
      // Firebase auth object is used to 
      // keep track of current sign in user
-       this.unSubscribeFromAuth = auth.onAuthStateChanged(user => {
-          this.setState({ currentUser:user });
+       this.unSubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
+          if(userAuth) {
+            const { uid  } = userAuth;
+             const userRef = await makeUserRegisterDocument(userAuth);
+             // store data to snapshot 
+             userRef.onSnapshot(snapshot => {
+                this.setState({
+                  currentUser:{
+                      uid,
+                      ...snapshot.data()
+                  }
+                });
+              },console.log(this.state.currentUser));
+          } else {
+            this.setState({ currentUser: null });
+          }
       });
    }
    componentWillUnmount() {
