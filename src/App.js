@@ -47,7 +47,7 @@ import { setCurrentUser } from './redux/user/user.actions';
             <Switch>
             <Route exact path="/"  component={HomePage} />
             <Route path="/shop" component={ShopPage} />
-            <Route exact path="/signin"  render={this.renderSignInSignUpComponent()}  />
+            <Route exact path="/signin"  render={() => this.renderSignInSignUpComponent()}  />
           </Switch>
        </BrowserRouter>
         );
