@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { HomePage } from './Pages/home-page/home-page.component';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import ShopPage from './components/shop-page/shop-page.component';
 import Header from './components/header/header.component';
 import SignInSignUp from './Pages/sign-in-sign-up-page/sign-in-sign-up.component';
@@ -39,14 +39,15 @@ import { setCurrentUser } from './redux/user/user.actions';
       // unsubscribe the auth of Firebase
       this.unSubscribeFromAuth();
    }
+   renderSignInSignUpComponent = () => this.props.currentUser ? <Redirect to="/"  /> : <SignInSignUp /> 
     render() {
       return(
           <BrowserRouter>
             <Header />
             <Switch>
             <Route exact path="/"  component={HomePage} />
-            <Route  path="/shop" component={ShopPage} />
-            <Route path="/signin" component={SignInSignUp} />
+            <Route path="/shop" component={ShopPage} />
+            <Route exact path="/signin"  render={this.renderSignInSignUpComponent()}  />
           </Switch>
        </BrowserRouter>
         );
@@ -58,4 +59,8 @@ const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 });
 
-export default connect(null,mapDispatchToProps)(App);
+const mapStateToProps = ({ user }) => ({
+  currentUser:user.currentUser
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);

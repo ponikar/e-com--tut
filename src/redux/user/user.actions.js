@@ -1,6 +1,7 @@
-import { SET_CURRENT_USER } from "../../Constants/redux/redux.constant";
+import { UserActionsType } from "./user.types";
+
 
 export const setCurrentUser = user => ({
-    type: SET_CURRENT_USER,
+    type: UserActionsType.SET_CURRENT_USER,
     payload:user
 });
