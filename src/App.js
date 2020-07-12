@@ -6,12 +6,12 @@ import ShopPage from './components/shop-page/shop-page.component';
 import Header from './components/header/header.component';
 import SignInSignUp from './Pages/sign-in-sign-up-page/sign-in-sign-up.component';
 import { auth, makeUserRegisterDocument } from './components/firebase/firebase.config';
+import { connect } from 'react-redux'
+import { setCurrentUser } from './redux/user/user.actions';
 
 
  class App extends React.Component {
-   state = {
-     currentUser:null
-   }
+ 
    unSubscribeFromAuth = null
    componentDidMount() {
      // Firebase auth object is used to 
@@ -19,18 +19,19 @@ import { auth, makeUserRegisterDocument } from './components/firebase/firebase.c
        this.unSubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
           if(userAuth) {
             const { uid  } = userAuth;
+            const { setCurrentUser } = this.props;
              const userRef = await makeUserRegisterDocument(userAuth);
              // store data to snapshot 
              userRef.onSnapshot(snapshot => {
-                this.setState({
+                setCurrentUser({
                   currentUser:{
                       uid,
                       ...snapshot.data()
                   }
                 });
-              },console.log(this.state.currentUser));
+              });
           } else {
-            this.setState({ currentUser: null });
+            setCurrentUser({ currentUser: null })
           }
       });
    }
@@ -40,15 +41,21 @@ import { auth, makeUserRegisterDocument } from './components/firebase/firebase.c
    }
     render() {
       return(
-        <BrowserRouter>
-         <Header currentUser={this.state.currentUser} />
-         <Switch>
-         <Route exact path="/"  component={HomePage} />
-         <Route  path="/shop" component={ShopPage} />
-         <Route path="/signin" component={SignInSignUp} />
-       </Switch>
-       </BrowserRouter>);
+          <BrowserRouter>
+            <Header />
+            <Switch>
+            <Route exact path="/"  component={HomePage} />
+            <Route  path="/shop" component={ShopPage} />
+            <Route path="/signin" component={SignInSignUp} />
+          </Switch>
+       </BrowserRouter>
+        );
     }
 }
 
-export default App;
+// mentioning all the actions creator here
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+export default connect(null,mapDispatchToProps)(App);
