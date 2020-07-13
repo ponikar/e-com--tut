@@ -39,6 +39,7 @@ import { setCurrentUser } from './redux/user/user.actions';
       // unsubscribe the auth of Firebase
       this.unSubscribeFromAuth();
    }
+   //WORK AS MIDDLEWARE
    renderSignInSignUpComponent = () => this.props.currentUser ? <Redirect to="/"  /> : <SignInSignUp /> 
     render() {
       return(
