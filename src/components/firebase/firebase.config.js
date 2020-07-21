@@ -50,3 +50,38 @@ export const makeUserRegisterDocument = async (authObject, addtionalData) => {
         return userRef; // return that user object
     }
 }
+
+export const addCollectionDocumentToFirebase = async (collectionKey, collectionObj) => {
+
+    const collectionRef = firestore.collection(collectionKey);
+
+    const batch = firestore.batch(); // atomic opreation;
+
+    /// store the data to firestore 
+    collectionObj.forEach(obj => {
+        const newDocRef = collectionRef.doc(); // creating new document
+        batch.set(newDocRef, obj);
+       
+    });
+
+   return await batch.commit(); // if the data has been uploaded then commit the changes
+}
+
+
+export const convertCollectionsSnapShotToMap = collection => {
+    const transformedCollection = collection.docs.map(doc => {
+        const { title, items } = doc.data();
+
+        return {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+        };
+    });
+
+    return transformedCollection.reduce((accumlator,collection) => {
+        accumlator[collection.title.toLowerCase()] = collection;
+        return accumlator;
+    },{});
+}

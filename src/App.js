@@ -11,6 +11,7 @@ import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
 import CheckOut from './Pages/checkout/checkout.component';
+import { selectCollectionForPreview } from './redux/shop-data/shop-data.selector';
 
 
  class App extends React.Component {
@@ -36,6 +37,8 @@ import CheckOut from './Pages/checkout/checkout.component';
           } else {
             setCurrentUser({ currentUser: null })
           }
+
+        
       });
    }
    componentWillUnmount() {
@@ -61,11 +64,13 @@ import CheckOut from './Pages/checkout/checkout.component';
 
 // mentioning all the actions creator here
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  setCurrentUser: user => dispatch(setCurrentUser(user)),
+ 
 });
 
 const mapStateToProps = createStructuredSelector({
-  currentUser:selectCurrentUser
+  currentUser:selectCurrentUser,
+  collectionsArray:selectCollectionForPreview
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);

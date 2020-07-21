@@ -40,7 +40,7 @@ const CheckOut = ({ cartItems, total }) => (
             4242 4242 4242 4242 
             123 01/25
         </div>
-    </div>
+    </div> 
 </div>
 );
 
