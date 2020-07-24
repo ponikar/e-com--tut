@@ -5,46 +5,19 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import ShopPage from './components/shop-page/shop-page.component';
 import Header from './components/header/header.component';
 import SignInSignUp from './Pages/sign-in-sign-up-page/sign-in-sign-up.component';
-import { auth, makeUserRegisterDocument } from './components/firebase/firebase.config';
 import { connect } from 'react-redux'
-import { setCurrentUser } from './redux/user/user.actions';
-import { selectCurrentUser } from './redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
 import CheckOut from './Pages/checkout/checkout.component';
-import { selectCollectionForPreview } from './redux/shop-data/shop-data.selector';
+import { selectCurrentUser } from './redux/user/user.selectors';
+import { checkUserSession } from './redux/user/user.actions';
+
 
 
  class App extends React.Component {
- 
-   unSubscribeFromAuth = null
    componentDidMount() {
-     // Firebase auth object is used to 
-     // keep track of current sign in user
-       this.unSubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
-          if(userAuth) {
-            const { uid  } = userAuth;
-            const { setCurrentUser } = this.props;
-             const userRef = await makeUserRegisterDocument(userAuth);
-             // store data to snapshot 
-             userRef.onSnapshot(snapshot => {
-                setCurrentUser({
-                  currentUser:{
-                      uid,
-                      ...snapshot.data()
-                  }
-                });
-              });
-          } else {
-            setCurrentUser({ currentUser: null })
-          }
-
-        
-      });
-   }
-   componentWillUnmount() {
-      // unsubscribe the auth of Firebase
-      this.unSubscribeFromAuth();
-   }
+    const { checkUserSession  } = this.props;
+    checkUserSession();
+   } 
    //WORK AS MIDDLEWARE
    renderSignInSignUpComponent = () => this.props.currentUser ? <Redirect to="/"  /> : <SignInSignUp /> 
     render() {
@@ -62,15 +35,14 @@ import { selectCollectionForPreview } from './redux/shop-data/shop-data.selector
     }
 }
 
-// mentioning all the actions creator here
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)),
- 
-});
+
 
 const mapStateToProps = createStructuredSelector({
-  currentUser:selectCurrentUser,
-  collectionsArray:selectCollectionForPreview
+  currentUser: selectCurrentUser
+});
+
+const mapStateToDispatch = dispatch => ({
+  checkUserSession: () => dispatch(checkUserSession())
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapStateToDispatch)(App);

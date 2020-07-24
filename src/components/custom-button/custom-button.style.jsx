@@ -24,7 +24,6 @@ export const googleSignInStyle = css`
 `;
 
 const getButtonStyle = props => {
-    console.log(props);
     if(props.isGoogleSign) {
         return googleSignInStyle;
     }
