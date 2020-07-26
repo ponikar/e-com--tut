@@ -13,7 +13,7 @@ export const selectCollectionForPreview = createSelector([selectCollection],
 
 export const selectCategory = colllectionURLparams => createSelector(
         [selectCollection],
-        collections => collections ? collections[colllectionURLparams]: null);
+        collections => collections !== null ? collections[colllectionURLparams]: null);
 
 export const selectIsCollectionFetching = createSelector([selectShop], 
                 shop => shop.isFetching);       

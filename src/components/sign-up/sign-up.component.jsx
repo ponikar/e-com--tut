@@ -1,30 +1,30 @@
 import React from 'react'
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
-import { auth, makeUserRegisterDocument } from '../firebase/firebase.config';
 
 import "./sign-up.style.scss"
 import { singUpStart } from '../../redux/user/user.actions';
 import { connect } from 'react-redux';
+import { useState } from 'react';
 
-class SignUp extends React.Component {
-
-    state = {
+const SignUp = ({ singUpStart }) => {
+    // first set up useState 
+    const [userCredentials, serCredentials] = useState({
         email:"",
         displayName:"",
         password:"",
         confirmpassword:""
-    };
+    });
+    // destructure the object of useState User Credentials
+    const { email,displayName,password,confirmpassword} = userCredentials;
 
-    handleChange = event => {
-        
+    // create own Method apart from CLASS METHOD
+    const handleChange = event => {
         const { target: { name, value } } = event;
-        this.setState({ [name]: value });
+        serCredentials({...userCredentials, [name]: value });
     }
-    handleSubmit = async event => {
+    const handleSubmit = async event => {
         event.preventDefault();
-        const { email, password, confirmpassword, displayName } = this.state;
-        const { singUpStart } = this.props;
         if(confirmpassword !== password) {
             alert("Password does not match");
             return;
@@ -33,39 +33,37 @@ class SignUp extends React.Component {
             console.log("Creating user")
             singUpStart({ email, password, displayName });
     }
-    render() {
-        const { email, displayName, password, confirmpassword } = this.state;
         return(
             <div className="sign-up">
                 <h2 className="title">I do not have a account</h2>
                 <span>Sign up with your email and password</span>
-                <form onSubmit={this.handleSubmit} className="sing-up-form">
+                <form onSubmit={handleSubmit} className="sing-up-form">
                     <FormInput
                         type="email"
                         label="Email"
                         name="email"
-                        handleChange={this.handleChange}
+                        handleChange={handleChange}
                         value={email}
                     />
                     <FormInput
                         type="text"
                         label="Display Name"
                         name="displayName"
-                        handleChange={this.handleChange}
+                        handleChange={handleChange}
                         value={displayName}
                     />
                     <FormInput
                         type="password"
                         label="Password"
                         name="password"
-                        handleChange={this.handleChange}
+                        handleChange={handleChange}
                         value={password}
                     />
                     <FormInput
                         type="password"
                         label="Confirm Password"
                         name="confirmpassword"
-                        handleChange={this.handleChange}
+                        handleChange={handleChange}
                         value={confirmpassword}
                     />
                     <CustomButton type="submit">
@@ -74,7 +72,6 @@ class SignUp extends React.Component {
                 </form>
             </div>
         )
-    }
 }
 
 

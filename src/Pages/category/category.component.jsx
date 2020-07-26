@@ -1,12 +1,9 @@
 import React from 'react'
 import "./category.style.scss"
-import { selectCategory } from '../../redux/shop-data/shop-data.selector';
-import { connect } from 'react-redux';
 import CollectionItem from '../../components/collection-item/collection-item.component';
 
 
 const CategoryPage = ({ collection }) => {
-    console.log(collection);
     const { title, items } = collection;
     return(
         <div className="collection-page">
@@ -21,8 +18,4 @@ const CategoryPage = ({ collection }) => {
     );
 }
 
-const mapStateToProps = (state, ownProps) => ({
-    collection: selectCategory(ownProps.match.params.categoryId)(state)
-});
-
-export default connect(mapStateToProps)(CategoryPage);
+export default CategoryPage;
